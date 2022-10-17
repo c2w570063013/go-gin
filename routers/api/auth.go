@@ -3,6 +3,7 @@ package api
 import (
 	"example.com/my-gin/pkg/app"
 	"example.com/my-gin/pkg/e"
+	"example.com/my-gin/pkg/setting"
 	"example.com/my-gin/pkg/util"
 	"example.com/my-gin/service/auth_service"
 	"fmt"
@@ -12,8 +13,13 @@ import (
 )
 
 type auth struct {
-	Username string `valid:"Required; MaxSize(50); MinSize(5);"`
-	Password string `valid:"Required; MaxSize(50); MinSize(5);"`
+	Username string `form:"username" valid:"Required; MaxSize(50); MinSize(5);"`
+	Password string `form:"password" valid:"Required; MaxSize(50); MinSize(5);"`
+}
+
+type changePWD struct {
+	Password   string `form:"password" valid:"Required; MaxSize(50); MinSize(5);"`
+	ConfirmPwd string `form:"confirm_password" valid:"Required; MaxSize(50); MinSize(5);"`
 }
 
 func Register(c *gin.Context) {
@@ -89,4 +95,39 @@ func Login(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, map[string]string{
 		"token": token,
 	})
+}
+
+func ChangePwd(c *gin.Context) {
+	appG := app.Gin{C: c}
+	valid := validation.Validation{}
+
+	pwd := c.PostForm("password")
+	confirmPwd := c.PostForm("confirm_password")
+
+	a := changePWD{Password: pwd, ConfirmPwd: confirmPwd}
+	ok, _ := valid.Valid(&a)
+	if !ok {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		return
+	}
+
+	if pwd != confirmPwd {
+		appG.Response(http.StatusInternalServerError, e.ERROR_INCONSISTENT_PWD, nil)
+		return
+	}
+
+	if util.EncodeMD5(util.EncodeMD5(pwd)) == setting.UserMd5EncodedPwd {
+		appG.Response(http.StatusInternalServerError, e.ERROR_PWD_NO_CHANGE, nil)
+		return
+	}
+
+	authService := auth_service.Auth{Password: util.EncodeMD5(pwd), Id: setting.UserId}
+	if err := authService.ModifyPwd(); err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR, nil)
+
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
 }

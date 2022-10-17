@@ -3,6 +3,7 @@ package v1
 import (
 	"example.com/my-gin/pkg/app"
 	"example.com/my-gin/pkg/e"
+	"example.com/my-gin/pkg/setting"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -30,6 +31,7 @@ func GetAlbums(c *gin.Context) {
 
 // postAlbums adds an album from JSON received in the request body.
 func PostAlbums(c *gin.Context) {
+	fmt.Println("postalbum,,,,,", setting.UserId)
 	var (
 		newAlbum album
 		appG     = app.Gin{C: c}

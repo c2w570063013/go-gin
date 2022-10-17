@@ -51,3 +51,10 @@ func AddUser(username, password string) error {
 	}
 	return nil
 }
+
+func ModifyPwd(id int, password string) error {
+	if err := db.Model(&Auth{}).Where("id=?", id).Update("password", password).Error; err != nil {
+		return err
+	}
+	return nil
+}

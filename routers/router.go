@@ -20,8 +20,9 @@ func InitRouter() *gin.Engine {
 	apiV1.Use(jwt.JWT())
 	{
 		apiV1.GET("/album", v1.GetAlbums)
-		apiV1.GET("getByAlbumId/:id", v1.GetAlbumByID)
-		apiV1.POST("album", v1.PostAlbums)
+		apiV1.GET("/getByAlbumId/:id", v1.GetAlbumByID)
+		apiV1.POST("/album", v1.PostAlbums)
+		apiV1.POST("/changePwd", api.ChangePwd)
 	}
 	return r
 }

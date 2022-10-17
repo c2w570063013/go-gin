@@ -31,3 +31,10 @@ func (a *Auth) Add() error {
 	}
 	return nil
 }
+
+func (a *Auth) ModifyPwd() error {
+	if err := models.ModifyPwd(a.Id, a.Password); err != nil {
+		return err
+	}
+	return nil
+}

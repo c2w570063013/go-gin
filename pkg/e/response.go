@@ -32,6 +32,9 @@ var MsgFlags = map[int]string{
 	ERROR_UPLOAD_SAVE_IMAGE_FAIL:    "保存图片失败",
 	ERROR_UPLOAD_CHECK_IMAGE_FAIL:   "检查图片失败",
 	ERROR_UPLOAD_CHECK_IMAGE_FORMAT: "校验图片错误，图片格式或大小有问题",
+
+	ERROR_INCONSISTENT_PWD: "密码不一致",
+	ERROR_PWD_NO_CHANGE:    "密码不能跟原来的一致",
 }
 
 // GetMsg get error information based on Code

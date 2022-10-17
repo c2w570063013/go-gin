@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+// Cache user info after login
+var UserId int
+var UserMd5EncodedPwd string
+
 type App struct {
 	JwtSecret string
 	PageSize  int
